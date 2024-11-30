@@ -1,7 +1,7 @@
-from board.BoardGui import *
+from libs.boardgamegui import gui_play
+from game.HitoriGame import *
+
 
 if __name__ == "__main__":
     
-    b = BoardGui((4, 4))
-    
-    b.printMaskinTerminal()
+    gui_play(HitoriGame())
