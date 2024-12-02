@@ -31,7 +31,9 @@ class HitoriGame(BoardGame):
             
                 x = choice(l)
                 
-                i.append(x) # usare count per vedere se si ripete 2 volte se si non mettere altrimenti metti
+                if i.count(x) <= 1:
+                
+                    i.append(x) # usare count per vedere se si ripete 2 volte se si non mettere altrimenti metti
         
         
         self._m = m
