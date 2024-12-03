@@ -3,8 +3,9 @@ sys.path.append("../")
 
 
 
-from libs.boardgame import *
+from libs.boardgame import BoardGame
 from random import choice
+from libs.boardgamegui import gui_play
 
 
 intMatrix = list[list[int]]
@@ -12,50 +13,61 @@ anyMatrix = list[list[any]]
 
 class HitoriGame(BoardGame):
     
-    def __init__(self) -> None:
+    def __init__(self, w: int, h: int):
         
-        self._m = None
-        
-        
-    def initMatrix(self, d: int) -> intMatrix:
-        
-        l = [x for x in range(d+1)]
-        l.pop(0)
-        
-        m = [[] for x in range(d)]
+        self._w, self._h = w, h
+        self._numbers = list(range(6 * 6))
+        self._annots = [0] * (6 * 6)
         
         
-        for i in m:
-            
-            for j in range(d):
-            
-                x = choice(l)
-                
-                if i.count(x) <= 1:
-                
-                    i.append(x) # usare count per vedere se si ripete 2 volte se si non mettere altrimenti metti
+    def play(self, x, y, action):
+        if action == "flag":
+            self.fill(x, y)
+        else:
+            self._annots[x + y * self._w] += 1
+            self._annots[x + y * self._w] %= 3
+
+
+    def read(self, x, y):
+        txt = str(self._numbers[x + y * self._w])
+        if self._annots[x + y * self._w] == 1:
+            txt += "#"
+        elif self._annots[x + y * self._w] == 2:
+            txt += "!"
+        return txt
+
+
+    def fill(self, x, y):
+        bd, w, h = self._annots, self._w, self._h
+        if 0 <= x < w and 0 <= y < h and bd[x + y * w] == 0:
+            bd[x + y * w] = 1
+            for dx, dy in [(0, -1), (1, 0), (0, 1), (-1, 0)]:
+                self.fill(x + dx, y + dy)
+
+    
+    def finished(self): 
         
+        return False
+    
+    
+    def status(self): 
         
-        self._m = m
+        return "Playing"
+    
+    
+    def cols(self): 
         
-            
-            
-    def printM(self) -> None:
+        return self._w
+    
+    
+    def rows(self): 
         
-        for i in self._m:
-            
-            for j in i:
-                
-                print(j, end=" ")
-                
-            print("")
+        return self._h
         
         
         
 if __name__ == "__main__":
     
-    hi = HitoriGame()
+    hi = HitoriGame(5, 5)
     
-    hi.initMatrix(5)
-    
-    hi.printM()
+    gui_play(hi)

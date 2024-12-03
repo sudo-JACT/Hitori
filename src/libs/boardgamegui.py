@@ -4,11 +4,16 @@
 @license This software is free - https://opensource.org/license/mit
 """
 
-try:
-    from __main__ import g2d
-except:
-    import libs.g2d
-from tmp_boardgame import BoardGame
+#try:
+    
+#    from __main__ import g2d
+        
+#except:
+    
+#    import libs.g2d
+
+from libs.boardgame import BoardGame
+from libs.g2d import *
 
 W, H = 40, 40
 
@@ -19,14 +24,14 @@ class BoardGameGui:
 
     def tick(self):
         game = self._game
-        x, y = g2d.mouse_pos()
+        x, y = mouse_pos()
         bx, by = x // W, y // H
-        released = set(g2d.previous_keys()) - set(g2d.current_keys())
+        released = set(previous_keys()) - set(current_keys())
         if game.finished():
-            g2d.alert(game.status())
-            g2d.close_canvas()
+            alert(game.status())
+            close_canvas()
         elif "Escape" in released:  # "Escape" key released
-            g2d.close_canvas()
+            close_canvas()
         elif "LeftButton" in released and by < game.rows():
             game.play(bx, by, "")
             self.update_buttons()
@@ -36,12 +41,12 @@ class BoardGameGui:
 
     def update_buttons(self):
         cols, rows = self._game.cols(), self._game.rows()
-        g2d.clear_canvas()
-        g2d.set_color((0, 0, 0))
+        clear_canvas()
+        set_color((0, 0, 0))
         for y in range(1, rows + 1):
-            g2d.draw_line((0, y * H), (cols * W, y * H))
+            draw_line((0, y * H), (cols * W, y * H))
         for x in range(1, cols):
-            g2d.draw_line((x * W, 0), (x * W, rows * H))
+            draw_line((x * W, 0), (x * W, rows * H))
         for y in range(rows):
             for x in range(cols):
                 _write(self._game.read(x, y), x * W, y * H, W, H)
@@ -50,9 +55,9 @@ class BoardGameGui:
 
 def _write(text, x, y, w, h):
     fsize = 0.75 * min(h, 2 * w / len(text or " "))
-    g2d.draw_text(text, (x + w // 2, y + h // 2), fsize)
+    draw_text(text, (x + w // 2, y + h // 2), fsize)
 
 def gui_play(game: BoardGame):
-    g2d.init_canvas((game.cols() * W, game.rows() * H + H))
+    init_canvas((game.cols() * W, game.rows() * H + H))
     ui = BoardGameGui(game)
-    g2d.main_loop(ui.tick)
+    main_loop(ui.tick)
