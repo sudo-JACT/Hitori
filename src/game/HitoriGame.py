@@ -63,9 +63,36 @@ class HitoriGame(BoardGame):
             
             for y in range(self._h):
                 
+                for z in range(self._h):
+                    
+                    try:
+                    
+                        if self._numbers[x + y * self._w] == self._numbers[x + z * self._w] and z > y:
+                            
+                            print("CACCA")
+                            
+                            return False
+                            
+                    except:
+                        
+                        pass
+                    
+                    try:
+                        
+                        if self._numbers[x + y * self._w] == self._numbers[(x*5) + y * self._w]:
+                            
+                            print("CACCA2")
+                            
+                            return False
+                        
+                    except:
+                        
+                        pass
+                
+                
                 try:
                     
-                    if (self._annots[x + y * self._w] == 1 and self._annots[(x+1) + y * self._w] == 1):
+                    if (self._annots[x + y * self._w] == 1 and self._annots[(x+1) + y * self._w] == 1) and self._w % (x+1) != 0:
                         
                         print("LOL")
                         
@@ -75,10 +102,10 @@ class HitoriGame(BoardGame):
                     
                     pass
                 
-                # NON SERVE
+                
                 try:
                     
-                    if (self._annots[x + y * self._w] == 1 and self._annots[(x-1) + y * self._w] == 1):
+                    if (self._annots[x + y * self._w] == 1 and self._annots[(x-1) + y * self._w] == 1)  and self._w % x == 0:
                         
                         print("LMAO")
                         
@@ -101,7 +128,7 @@ class HitoriGame(BoardGame):
                     
                     pass
                 
-                # NON SERVE
+                
                 try:
                     
                     if (self._annots[x + y * self._w] == 1 and self._annots[x + (y-1) * self._w] == 1):
