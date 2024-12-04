@@ -9,7 +9,7 @@ from libs.boardgame import BoardGame
 from libs.g2d import *
 
 W, H = 40, 40
-BLACK, GRAY, WHITE = (0, 0, 0), (127, 127, 127), (255, 255, 255)
+BLACK, GRAY, WHITE, RED = (0, 0, 0), (127, 127, 127), (255, 255, 255), (255, 0, 0)
 
 class BoardGameGui:
     def __init__(self, game: BoardGame,
