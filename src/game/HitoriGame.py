@@ -201,7 +201,7 @@ class HitoriGame(BoardGame):
                 
                 try:
                     
-                    if (self._annots[x + y * self._w] == 1 and self._annots[x + (y+1) * self._w] == 1):
+                    if (self._annots[x + y * self._w] == 1 and self._annots[x + (y+1) * self._w] == 1) and self._y % (y+1) != 0:
                         
                         print("XD")
                         
@@ -214,7 +214,7 @@ class HitoriGame(BoardGame):
                 
                 try:
                     
-                    if (self._annots[x + y * self._w] == 1 and self._annots[x + (y-1) * self._w] == 1):
+                    if (self._annots[x + y * self._w] == 1 and self._annots[x + (y-1) * self._w] == 1) and self._h % y == 0:
                         
                         print(":)")
                         
