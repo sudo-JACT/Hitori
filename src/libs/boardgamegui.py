@@ -25,17 +25,29 @@ class BoardGameGui:
         mouse_x, mouse_y = mouse_pos()
         x, y = mouse_x // W, mouse_y // H
         released = set(previous_keys()) - set(current_keys())
+        
+        print(game.finished())
+        
         if game.finished():
-            alert(game.status())
-            close_canvas()
-            return
-        if "Escape" in released:  # "Escape" key released
-            close_canvas()
-            return
-        for k, v in self._actions.items():
-            if k in released and y < game.rows():
-                game.play(x, y, v)
-                self.update_buttons((x, y))
+            
+            clear_canvas((255, 255, 255))
+            
+            draw_text("YOU WON", ((mouse_x), (mouse_y)), 50)
+            
+            if "Escape" in released:  # "Escape" key released
+                close_canvas()
+                return
+        
+        else:
+            
+            
+            if "Escape" in released:  # "Escape" key released
+                close_canvas()
+                return
+            for k, v in self._actions.items():
+                if k in released and y < game.rows():
+                    game.play(x, y, v)
+                    self.update_buttons((x, y))
 
     def update_buttons(self, last_move=None):
         cols, rows = self._game.cols(), self._game.rows()

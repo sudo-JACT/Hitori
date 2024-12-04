@@ -13,6 +13,6 @@ def loadMatrix(path: str) -> list[int]:
             
             for x in l:
                 
-                m.append(x)
+                m.append(int(x))
         
         return m

@@ -35,7 +35,7 @@ class HitoriGame(BoardGame):
 
             for dx, dy in [(0, -1), (1, 0), (0, 1), (-1, 0)]:
 
-                counter += self.check_connection(x + dx, y + dy, counter, mat_temp)
+                counter += self.check_connection(x + dx, y + dy, 0, mat_temp)
                 
                 
         return counter        
@@ -155,7 +155,7 @@ class HitoriGame(BoardGame):
                     
                     try:
                         
-                        if (self._numbers[x + y * self._w] == self._numbers[z + y * self._w]) and (x != z) and (self._numbers[x + y * self._w] != 1 and self._numbers[z + y * self._w] != 1):
+                        if (self._numbers[x + y * self._w] == self._numbers[z + y * self._w]) and (x != z) and ((self._annots[x + y * self._w] != 1) and (self._annots[z + y * self._w] != 1)):
                             
                             print(self._numbers[x + y * self._w])
                             print(self._numbers[z + y * self._w])
@@ -241,6 +241,11 @@ class HitoriGame(BoardGame):
         nt = self._annots.count(0) + self._annots.count(2)
         
         if n != nt:
+            
+            print(n)
+            print(nt)
+            
+            print("MAAAAAAAANZ")
             
             return False
         
