@@ -12,9 +12,8 @@ W, H = 40, 40
 BLACK, GRAY, WHITE, RED = (0, 0, 0), (127, 127, 127), (255, 255, 255), (255, 0, 0)
 
 class BoardGameGui:
-    def __init__(self, game: BoardGame,
-                 actions={"LeftButton": "", "RightButton": "flag"},
-                 annots={"#": (0, GRAY), "!": (2, GRAY)}):
+    def __init__(self, game: BoardGame, actions={"LeftButton": "", "RightButton": "flag", "h": 666}, annots={"#": (0, GRAY), "!": (2, GRAY)}):
+        
         self._game = game
         self._actions = actions
         self._annots = annots
@@ -25,8 +24,6 @@ class BoardGameGui:
         mouse_x, mouse_y = mouse_pos()
         x, y = mouse_x // W, mouse_y // H
         released = set(previous_keys()) - set(current_keys())
-        
-        print(game.finished())
         
         if game.finished():
             
@@ -79,8 +76,8 @@ class BoardGameGui:
         set_color(BLACK)
         draw_text(text, center, fsize)
 
-def gui_play(game: BoardGame):
-    init_canvas((game.cols() * W, game.rows() * H + H))
+def gui_play(game: BoardGame, scale: int=1):
+    init_canvas((game.cols() * W, game.rows() * H + H), scale)
     ui = BoardGameGui(game)
     main_loop(ui.tick)
 

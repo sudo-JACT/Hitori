@@ -7,19 +7,17 @@ from libs.boardgame import BoardGame
 from random import choice
 from libs.boardgamegui import gui_play
 from libs.datahandler import *
-
+from libs.g2d import Point
 
 class HitoriGame(BoardGame):
     
-    def __init__(self, w: int, h: int, matrix: str) -> None:
+    def __init__(self, dim: Point, matrix: str) -> None:
         
-        self._w, self._h = w, h
+        self._w, self._h = dim
         
         self._numbers = loadMatrix(matrix)
-        print(self._numbers)
-        self._annots = [0] * (w * h)
+        self._annots = [0] * (self._w * self._h)
         
-        self._cvcvc = 0
     
         
 
@@ -57,6 +55,10 @@ class HitoriGame(BoardGame):
             if self._annots[x + y * self._w] == 2:
                 
                 self.remove_clone(x, y)
+                
+        elif action == 666:
+            
+            print("madonna madoka magika")
     
 
         else:
@@ -117,12 +119,6 @@ class HitoriGame(BoardGame):
             if self._numbers[x + y * self._w] == self._numbers[x + dy * self._w] and not (dy==y):
 
                 self._annots[x + dy * self._w]=1
-            
-
-        
-        
-        
-        
         
         
     def wrong(self) -> bool:
@@ -144,9 +140,6 @@ class HitoriGame(BoardGame):
                     
                         if (self._numbers[x + y * self._w] == self._numbers[x + z * self._w]) and (z > y) and ((self._annots[x + y * self._w] != 1) and (self._annots[x + z * self._w] != 1)):
                             
-                            print("CACCA ", self._cvcvc)
-                            self._cvcvc += 1
-                            
                             return False
                             
                     except:
@@ -157,15 +150,6 @@ class HitoriGame(BoardGame):
                         
                         if (self._numbers[x + y * self._w] == self._numbers[z + y * self._w]) and (x != z) and ((self._annots[x + y * self._w] != 1) and (self._annots[z + y * self._w] != 1)):
                             
-                            print(self._numbers[x + y * self._w])
-                            print(self._numbers[z + y * self._w])
-                            print(x)
-                            print(y)
-                            
-                            print("CACCA2 ", self._cvcvc)
-                            
-                            self._cvcvc += 1
-                            
                             return False
                         
                     except:
@@ -175,9 +159,7 @@ class HitoriGame(BoardGame):
                 
                 try:
                     
-                    if (self._annots[x + y * self._w] == 1 and self._annots[(x+1) + y * self._w] == 1) and self._w % (x+1) != 0:
-                        
-                        print("LOL")
+                    if (self._annots[x + y * self._w] == 1 and self._annots[(x+1) + y * self._w] == 1) and self._w % (x+1) != 0:    
                         
                         return False
                 
@@ -190,8 +172,6 @@ class HitoriGame(BoardGame):
                     
                     if (self._annots[x + y * self._w] == 1 and self._annots[(x-1) + y * self._w] == 1)  and self._w % x == 0:
                         
-                        print("LMAO")
-                        
                         return False
                 
                 except:
@@ -203,8 +183,6 @@ class HitoriGame(BoardGame):
                     
                     if (self._annots[x + y * self._w] == 1 and self._annots[x + (y+1) * self._w] == 1) and self._y % (y+1) != 0:
                         
-                        print("XD")
-                        
                         return False
                 
                 except:
@@ -215,8 +193,6 @@ class HitoriGame(BoardGame):
                 try:
                     
                     if (self._annots[x + y * self._w] == 1 and self._annots[x + (y-1) * self._w] == 1) and self._h % y == 0:
-                        
-                        print(":)")
                         
                         return False
                 
@@ -241,11 +217,6 @@ class HitoriGame(BoardGame):
         nt = self._annots.count(0) + self._annots.count(2)
         
         if n != nt:
-            
-            print(n)
-            print(nt)
-            
-            print("MAAAAAAAANZ")
             
             return False
         
