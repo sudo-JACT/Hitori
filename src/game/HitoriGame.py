@@ -68,66 +68,58 @@ class HitoriGame(BoardGame):
 
             self._annots[x + y * self._w] += 1
             self._annots[x + y * self._w] %= 3
+        
+        
             
         
-    def AI(self) -> None:
+    def analyze_move(self, x: int, y: int) -> None:
+        
+        w, h = self._w, self._h
+        original_annots = self._annots[:]
 
+        # Simula annerire
+        self._annots[x + y * w] = 1
+        self.automateH()
+        if not self.wrong():
+            black_result = self._annots[:]
+        else:
+            black_result = None
+        self._annots = original_annots[:]  # Ripristina
+
+        # Simula cerchiare
+        self._annots[x + y * w] = 2
+        self.automateH()
+        if not self.wrong():
+            circle_result = self._annots[:]
+        else:
+            circle_result = None
+        self._annots = original_annots[:]  # Ripristina
+
+        # Confronta i risultati
+        if black_result and circle_result:
+            if black_result == circle_result:
+                print(f"Cella ({x}, {y}) può essere annerita o cerchiata.")  # Debug
+            else:
+                print(f"Ambiguità sulla cella ({x}, {y}).")  # Debug
+        elif black_result:
+            print(f"Annerimento sicuro per la cella ({x}, {y}).")  # Debug
+            self._annots = black_result
+        elif circle_result:
+            print(f"Cerchiatura sicura per la cella ({x}, {y}).")  # Debug
+            self._annots = circle_result
+        else:
+            print(f"Nessuna azione possibile per la cella ({x}, {y}).")  # Debug
+
+
+
+    def AI(self) -> None:
         print("AI in esecuzione...")  # Debug
         w, h = self._w, self._h
-        numbers = self._numbers
-        annots = self._annots
 
-        # Gestione delle righe
         for y in range(h):
-            print(f"Controllo riga {y}")  # Debug
-            row_counts = {}
             for x in range(w):
-                num = numbers[x + y * w]
-                if annots[x + y * w] == 0:  # Solo se non è già oscurato o contrassegnato
-                    row_counts[num] = row_counts.get(num, 0) + 1
-
-            print(f"Conteggi riga {y}: {row_counts}")  # Debug
-
-            # Oscura una copia per riga
-            for x in range(w):
-                num = numbers[x + y * w]
-                if row_counts.get(num, 0) > 1 and annots[x + y * w] == 0:
-                    print(f"Provo a oscurare {num} alla posizione ({x}, {y})")  # Debug
-                    annots[x + y * w] = 1
-                    if not self.wrong():  # Se non viola le regole, conferma
-                        print(f"Oscuro {num} alla posizione ({x}, {y})")  # Debug
-                        row_counts[num] -= 1
-                    else:  # Altrimenti ripristina
-                        print(f"Ripristino {num} alla posizione ({x}, {y})")  # Debug
-                        annots[x + y * w] = 0
-
-        # Gestione delle colonne
-        for x in range(w):
-            print(f"Controllo colonna {x}")  # Debug
-            col_counts = {}
-            for y in range(h):
-                num = numbers[x + y * w]
-                if annots[x + y * w] == 0:  # Solo se non è già oscurato o contrassegnato
-                    col_counts[num] = col_counts.get(num, 0) + 1
-
-            print(f"Conteggi colonna {x}: {col_counts}")  # Debug
-
-            # Oscura una copia per colonna
-            for y in range(h):
-                num = numbers[x + y * w]
-                if col_counts.get(num, 0) > 1 and annots[x + y * w] == 0:
-                    print(f"Provo a oscurare {num} alla posizione ({x}, {y})")  # Debug
-                    annots[x + y * w] = 1
-                    if not self.wrong():  # Se non viola le regole, conferma
-                        print(f"Oscuro {num} alla posizione ({x}, {y})")  # Debug
-                        col_counts[num] -= 1
-                    else:  # Altrimenti ripristina
-                        print(f"Ripristino {num} alla posizione ({x}, {y})")  # Debug
-                        annots[x + y * w] = 0
-
-        print(f"Annotazioni dopo l'AI: {annots}")  # Debug
-
-
+                if self._annots[x + y * self._w] == 0:  # Solo celle non annotate
+                    self.analyze_move(x, y)
 
 
 
@@ -201,82 +193,31 @@ class HitoriGame(BoardGame):
 
                 self._annots[x + dy * self._w]=1
         
-        
-    def show_state(self):
-    
-        for y in range(self._h):
-            row = ""
-            for x in range(self._w):
-                num = self._numbers[x + y * self._w]
-                ann = self._annots[x + y * self._w]
-                if ann == 1:
-                    row += f"[{num}] "  # Mostra la cella oscurata
-                else:
-                    row += f" {num}  "  # Mostra la cella non oscurata
-            print(row)
-        print("\n")  # Linea vuota tra le iterazioni per chiarezza
+
 
     def wrong(self) -> bool:
     
-        print("Verifica stato...")
-        w, h = self._w, self._h
-        annots = self._annots
-        numbers = self._numbers
-
-        # Regola 1: Celle oscurate non devono essere adiacenti
-        for x in range(w):
-            for y in range(h):
-                if annots[x + y * w] == 1:  # Se la cella è oscurata
-                    for dx, dy in [(0, 1), (1, 0), (0, -1), (-1, 0)]:
-                        nx, ny = x + dx, y + dy
-                        if 0 <= nx < w and 0 <= ny < h and annots[nx + ny * w] == 1:
-                            print(f"Errore: Celle adiacenti oscurate ({x}, {y}) e ({nx}, {ny})")  # Debug
-                            return True
-
-        # Regola 2: Numeri duplicati non oscurati nella stessa riga o colonna
-        for y in range(h):
-            seen = set()
-            for x in range(w):
-                if annots[x + y * w] == 0:  # Considera solo celle non oscurate
-                    num = numbers[x + y * w]
-                    if num in seen:
-                        print(f"Errore: Duplicato non oscurato nella riga {y} per il numero {num}")  # Debug
+        # Controlla solo se ci sono numeri duplicati nelle righe e colonne ignorando i numeri anneriti
+        for x in range(self._w):
+            row_seen = set()
+            col_seen = set()
+            for y in range(self._h):
+                # Controllo riga
+                num = self._numbers[x + y * self._w]
+                if self._annots[x + y * self._w] != 1:  # Ignora le celle annerite
+                    if num in row_seen:
                         return True
-                    seen.add(num)
+                    row_seen.add(num)
 
-        for x in range(w):
-            seen = set()
-            for y in range(h):
-                if annots[x + y * w] == 0:  # Considera solo celle non oscurate
-                    num = numbers[x + y * w]
-                    if num in seen:
-                        print(f"Errore: Duplicato non oscurato nella colonna {x} per il numero {num}")  # Debug
+                # Controllo colonna
+                num = self._numbers[y + x * self._w]
+                if self._annots[y + x * self._w] != 1:  # Ignora le celle annerite
+                    if num in col_seen:
                         return True
-                    seen.add(num)
+                    col_seen.add(num)
 
-        # Regola 3: Tutte le celle non oscurate devono essere connesse
-        mat_temp = [False] * (w * h)
-        n = 0  # Numero di celle connesse trovate
-        for x in range(w):
-            for y in range(h):
-                if annots[x + y * w] == 0:  # Trova una cella non oscurata
-                    if n == 0:
-                        # Avvia il conteggio delle connessioni
-                        n = self.check_connection(x, y, n, mat_temp)
-                    else:
-                        # Trova un'altra componente non connessa
-                        print(f"Errore: Celle non connesse rilevate a partire da ({x}, {y})")  # Debug
-                        return True
-
-        nt = annots.count(0)  # Conta tutte le celle non oscurate
-        if n != nt:
-            print(f"Errore: Numero celle connesse ({n}) diverso da totale non oscurate ({nt})")  # Debug
-            return True
-
-        # Nessun errore rilevato
-        print("Stato valido.")  # Debug
+        # Non verifica connessioni o celle nere adiacenti
         return False
-
 
 
 
@@ -390,6 +331,14 @@ class HitoriGame(BoardGame):
     def rows(self) -> int: 
         
         return self._h
+
+
+
+
+
+
+
+
         
         
         
