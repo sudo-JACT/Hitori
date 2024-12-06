@@ -12,7 +12,7 @@ W, H = 40, 40
 BLACK, GRAY, WHITE, RED = (0, 0, 0), (127, 127, 127), (255, 255, 255), (255, 0, 0)
 
 class BoardGameGui:
-    def __init__(self, game: BoardGame, actions={"LeftButton": "", "RightButton": "flag", "h": 666}, annots={"#": (0, GRAY), "!": (2, GRAY)}):
+    def __init__(self, game: BoardGame, actions={"LeftButton": "", "RightButton": "flag", "h": 666, "a": "a"}, annots={"#": (0, GRAY), "!": (2, GRAY)}):
         
         self._game = game
         self._actions = actions
